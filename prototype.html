@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Tuition Estimator</title>
+    <script type="text/javascript" src="new.js"></script>
+  </head>
+  <body>
+    <h1>Tuition Estimator</h1>
+    <form id="tuitionform" onsubmit="return false;">
+      <div>
+        <fieldset>
+          <!--- SEMESTER -------------------------------->
+          <label>Semester</label><br>
+          <label class="radiolabel"><input type="radio" name="Semester" value="0" onclick="calculateTotal()">Spring 2020</label>
+          <label class="radiolabel"><input type="radio" name="Semester" value="1" onclick="calculateTotal()">Summer 2020</label>
+          <label class="radiolabel"><input type="radio" name="Semester" value="2" onclick="calculateTotal()">Fall 2020</label>
+          <br>
+          <!--- Tution Plan-------------------------------->
+          <label>Tution Plan</label>
+          <br>
+          <label class="radiolabel"><input type="radio" name="tuitionPlan" value="0" >Guaranteed</label>
+          <label class="radiolabel"><input type="radio" name="tuitionPlan" value="1" >Variable</label>
+          <br>
+          <!--- HOURS -------------------------------->
+          <label> Semester Credit Hours </label><br>
+          <select required id="semesterHours" name='hours' onchange="">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+          </select>
+          <br/>
+          <button onclick="calculateTotal()">View Estimated Cost</button>
+          <button onclick="resetForm()"> Reset Form</button>
+        </fieldset>
+      </div>
+      <div id="totalPrice"></div>
+    </form>
+    <script>
+      var semester = 5;
+var plan_prices = new Array();
+var services_prices = new Array();
+var servicePrice = 0;
+
+function getSemester() // this reads the value of the selected semester
+{
+  semester = 0;
+  var theForm = document.forms["tuitionform"];
+  var selectedSemester = theForm.elements["Semester"];
+  for(var i = 0; i < selectedSemester.length; i++)
+  {
+    if(selectedSemester[i].checked)
+    {
+      semester = selectedSemester[i].value;
+          declareArrays(); // based on the value of the semester selected, this function uses a switch statement to push those values into the arrays
+          break;
+    }
+  }
+  return semester;
+}
+
+function declareArrays() {
+  switch (semester) {
+    case "0": //full-now
+      plan_prices.push(188.58); //0 - Guaranteed - Resident
+      plan_prices.push(173.65); //1 - Variable - Resident
+      plan_prices.push(478.57); //2- Grad - Resident
+      services_prices.push(122.53); //0 - Guaranteed
+      services_prices.push(122.53); //1 - Variable - Resident
+      services_prices.push(148.76); //2 - Grad - Resident
+      return;
+      //break;
+    case "1": //half-now
+      plan_prices.push(94.29); //Guaranteed - Resident
+      plan_prices.push(198.09); // Variable - Resident
+      plan_prices.push(239.28); // Grad - Resident
+      services_prices.push(11.265); //0 - Guaranteed
+      services_prices.push(11.265); //1 - Variable - Resident
+      services_prices.push(24.38); //2 - Grad - Resident
+      return;
+    case "2": //full-next
+      plan_prices.push(9004.29); //Guaranteed - Resident
+      plan_prices.push(10098.09); // Variable - Resident
+      plan_prices.push(20039.28); // Grad - Resident
+      services_prices.push(20022.53); //0 - Guaranteed
+      services_prices.push(20022.53); //1 - Variable - Resident
+      services_prices.push(20048.76); //2 - Grad - Resident
+      return;
+    case "3": //half-next
+      plan_prices.push(904.29); //Guaranteed - Resident
+      plan_prices.push(1098.09); // Variable - Resident
+      plan_prices.push(2039.28); // Grad - Resident
+      services_prices.push(1011.265); //0 - Guaranteed
+      services_prices.push(1011.265); //1 - Variable - Resident
+      services_prices.push(1024.38); //2 - Grad - Resident
+      return;
+    default:
+      semesterSelection = 'no';
+      return semesterSelection;
+  }
+}
+
+function getPlanPrice(){
+   var planPrice = 0;
+   var theForm = document.forms["tuitionform"];
+   var selectedPlan = theForm.elements["tuitionPlan"];
+   for(var i = 0; i < selectedPlan.length; i++)
+   {
+     if(selectedPlan[i].checked)
+     {
+       planPrice = plan_prices[selectedPlan[i].value];
+       servicePrice = services_prices[selectedPlan[i].value];
+       break;
+     }
+   }
+   return planPrice;
+}
+
+function displayHours(){
+   var hours = document.getElementById("semesterHours").value;
+   var plan = getPlanPrice();
+   var cost;
+   var servicecost;
+   servicecost = hours * servicePrice;
+   cost = hours * plan;
+   cost = cost + servicecost + 100.00;
+   cost = cost.toFixed(0);
+   return cost;
+}
+
+
+function calculateTotal() {
+  getSemester(); // This functions runs prior so the appropriate semester values are loaded into the array
+  var tuitionCost = displayHours();
+    //display the result
+  var divobj = document.getElementById('totalPrice');
+  divobj.style.display = 'block';
+  divobj.innerHTML = "Estimated Cost of Tuition: $" + tuitionCost;
+}
+
+function hideTotal() {
+  var divobj = document.getElementById('totalPrice');
+  divobj.style.display = 'none';
+}
+
+function resetForm() {
+  document.getElementById("tuitionform").reset();
+}
+
+    </script>
+  </body>
+</html>
